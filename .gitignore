@@ -1,0 +1,37 @@
+# Dependencies
+node_modules/
+
+# Environment variables
+.env
+.env.local
+.env.production
+.env.development
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Build output (if any)
+dist/
+build/
+
+# Cache
+.cache
+.tmp
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE / Editor files
+.vscode/
+.idea/
+
+# Coverage reports
+coverage/
+
+# Uploads (if you don't want to push user files)
+uploads/
