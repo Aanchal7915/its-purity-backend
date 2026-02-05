@@ -42,6 +42,39 @@ const createCategory = async (req, res) => {
     }
 };
 
+// @desc    Update a category
+// @route   PUT /api/categories/:id
+// @access  Private/Admin
+const updateCategory = async (req, res) => {
+    try {
+        const { name, description, image, type, parent } = req.body;
+        const category = await Category.findById(req.params.id);
+
+        if (!category) {
+            return res.status(404).json({ message: 'Category not found' });
+        }
+
+        if (name && name !== category.name) {
+            const existing = await Category.findOne({ name });
+            if (existing && existing._id.toString() !== category._id.toString()) {
+                return res.status(400).json({ message: 'Category already exists' });
+            }
+            category.name = name;
+            category.slug = name.toLowerCase().replace(/ /g, '-');
+        }
+
+        if (typeof description !== 'undefined') category.description = description;
+        if (typeof image !== 'undefined') category.image = image;
+        if (typeof type !== 'undefined') category.type = type;
+        if (typeof parent !== 'undefined') category.parent = parent;
+
+        const updated = await category.save();
+        res.json(updated);
+    } catch (error) {
+        res.status(400).json({ message: error.message });
+    }
+};
+
 const deleteCategory = async (req, res) => {
     try {
         const category = await Category.findById(req.params.id);
@@ -59,5 +92,6 @@ const deleteCategory = async (req, res) => {
 module.exports = {
     getCategories,
     createCategory,
+    updateCategory,
     deleteCategory
 };
