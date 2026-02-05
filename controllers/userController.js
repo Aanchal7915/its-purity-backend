@@ -95,11 +95,15 @@ const addToWishlist = async (req, res) => {
     try {
         const user = await User.findById(req.user._id);
         if (user) {
-            if (!user.wishlist.includes(productId)) {
+            let action = 'added';
+            if (user.wishlist.includes(productId)) {
+                user.wishlist = user.wishlist.filter(id => id.toString() !== productId);
+                action = 'removed';
+            } else {
                 user.wishlist.push(productId);
-                await user.save();
             }
-            res.json(user.wishlist);
+            await user.save();
+            res.json({ wishlist: user.wishlist, action });
         } else {
             res.status(404).json({ message: 'User not found' });
         }
