@@ -21,6 +21,8 @@ const productSchema = new mongoose.Schema({
     targetAudience: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Category' }],
     productForm: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Category' }],
     images: [{ type: String }], // Array of image URLs
+    videoUrl: { type: String }, // Optional product video URL
+    primaryMedia: { type: String, enum: ['image', 'video'] }, // Which media should be primary
     benefits: [{ type: String }], // Simple array for bullet points
     detailedBenefits: [{
         title: String,

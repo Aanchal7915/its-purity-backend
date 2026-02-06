@@ -159,9 +159,65 @@ const updateOrderStatus = async (req, res) => {
     }
 }
 
+// @desc    Update a specific order item status
+// @route   PUT /api/orders/:id/items/:itemId/status
+// @access  Private (owner) / Admin
+const updateOrderItemStatus = async (req, res) => {
+    const { status } = req.body;
+    const order = await Order.findById(req.params.id).populate('user', 'id');
+
+    if (!order) {
+        res.status(404);
+        throw new Error('Order not found');
+    }
+
+    const isAdmin = req.user?.role === 'admin';
+    const isOwner = order.user && order.user._id.toString() === req.user._id.toString();
+
+    if (!isAdmin && !isOwner) {
+        res.status(403);
+        throw new Error('Not authorized');
+    }
+
+    const item = order.items.id(req.params.itemId);
+    if (!item) {
+        res.status(404);
+        throw new Error('Order item not found');
+    }
+
+    const allowedStatuses = ['Processing', 'Out for delivery', 'Delivered', 'Cancelled', 'Returned', 'Replaced', 'Return Requested', 'Replace Requested'];
+    if (!allowedStatuses.includes(status)) {
+        res.status(400);
+        throw new Error('Invalid status');
+    }
+
+    if (!isAdmin) {
+        const current = item.status || order.status || 'Processing';
+        const userAllowed = [];
+
+        if (current === 'Processing' || current === 'Out for delivery') {
+            userAllowed.push('Cancelled');
+        }
+        if (current === 'Delivered') {
+            userAllowed.push('Return Requested', 'Replace Requested');
+        }
+
+        if (!userAllowed.includes(status)) {
+            res.status(400);
+            throw new Error('Status change not allowed');
+        }
+    }
+
+    item.status = status;
+    await order.save();
+
+    res.json({ message: 'Item status updated', item });
+};
+
 module.exports = {
     addOrderItems,
     getMyOrders,
     getOrders,
-    updateOrderStatus
+    updateOrderStatus,
+    updateOrderItemStatus
 };

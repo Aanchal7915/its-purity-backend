@@ -107,7 +107,7 @@ const createProduct = async (req, res) => {
             brand, targetAudience, productForm, stock, sizes, colors, images, benefits,
             detailedBenefits, ingredients, usageInstructions,
             isFeatured, isBestSeller, isNewLaunch, isSuperSaver,
-            unitCount, unitName, packageSize, variants, rating, numReviews
+            unitCount, unitName, packageSize, variants, rating, numReviews, videoUrl, primaryMedia
         } = req.body;
         const product = new Product({
             name,
@@ -122,6 +122,8 @@ const createProduct = async (req, res) => {
             sizes,
             colors,
             images,
+            videoUrl,
+            primaryMedia,
             benefits,
             detailedBenefits,
             ingredients,
@@ -152,7 +154,7 @@ const updateProduct = async (req, res) => {
             brand, targetAudience, productForm, stock, sizes, colors, images, benefits,
             detailedBenefits, ingredients, usageInstructions,
             isFeatured, isBestSeller, isNewLaunch, isSuperSaver,
-            unitCount, unitName, rating, numReviews, packageSize, variants
+            unitCount, unitName, rating, numReviews, packageSize, variants, videoUrl, primaryMedia
         } = req.body;
         const product = await Product.findById(req.params.id);
 
@@ -168,6 +170,8 @@ const updateProduct = async (req, res) => {
             product.sizes = sizes || product.sizes;
             product.colors = colors || product.colors;
             product.images = images || product.images;
+            product.videoUrl = videoUrl !== undefined ? videoUrl : product.videoUrl;
+            product.primaryMedia = primaryMedia !== undefined ? primaryMedia : product.primaryMedia;
             product.benefits = benefits || product.benefits;
             product.detailedBenefits = detailedBenefits || product.detailedBenefits;
             product.ingredients = ingredients || product.ingredients;

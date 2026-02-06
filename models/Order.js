@@ -7,7 +7,12 @@ const orderSchema = new mongoose.Schema({
         quantity: { type: Number, required: true },
         price: { type: Number, required: true }, // Snapshot of price at time of order
         name: { type: String }, // Snapshot of product name
-        image: { type: String } // Snapshot of product image
+        image: { type: String }, // Snapshot of product image
+        status: {
+            type: String,
+            enum: ['Processing', 'Out for delivery', 'Delivered', 'Cancelled', 'Returned', 'Replaced', 'Return Requested', 'Replace Requested'],
+            default: 'Processing'
+        }
     }],
     totalAmount: { type: Number, required: true },
     shippingAddress: {
@@ -20,7 +25,7 @@ const orderSchema = new mongoose.Schema({
     },
     status: {
         type: String,
-        enum: ['Processing', 'Out for delivery', 'Delivered', 'Cancelled', 'Returned', 'Replaced'],
+        enum: ['Processing', 'Out for delivery', 'Delivered', 'Cancelled', 'Returned', 'Replaced', 'Return Requested', 'Replace Requested'],
         default: 'Processing'
     },
     timeline: [{
