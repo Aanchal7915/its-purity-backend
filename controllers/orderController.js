@@ -51,7 +51,9 @@ const addOrderItems = async (req, res) => {
                 items: orderItems.map(item => ({
                     product: item.product,
                     quantity: item.qty,
-                    price: item.price
+                    price: item.price,
+                    name: item.name,
+                    image: item.image
                 })),
                 user: req.user._id,
                 shippingAddress,
@@ -87,7 +89,8 @@ const addOrderItems = async (req, res) => {
 // @route   GET /api/orders/myorders
 // @access  Private
 const getMyOrders = async (req, res) => {
-    const orders = await Order.find({ user: req.user._id });
+    const orders = await Order.find({ user: req.user._id })
+        .populate('items.product', 'name images price');
     res.json(orders);
 };
 
@@ -95,7 +98,9 @@ const getMyOrders = async (req, res) => {
 // @route   GET /api/orders
 // @access  Private/Admin
 const getOrders = async (req, res) => {
-    const orders = await Order.find({}).populate('user', 'id name');
+    const orders = await Order.find({})
+        .populate('user', 'id name')
+        .populate('items.product', 'name');
     res.json(orders);
 };
 
