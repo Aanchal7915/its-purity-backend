@@ -34,4 +34,4 @@ Thumbs.db
 coverage/
 
 # Uploads (if you don't want to push user files)
-uploads/
+# uploads/
